@@ -57,7 +57,7 @@ In this demonstration project we try to test simple fastapi app using pytest
         
 ```
 
-### Actual test casis:
+### Actual test cases:
 
 ```python
     import pytest
