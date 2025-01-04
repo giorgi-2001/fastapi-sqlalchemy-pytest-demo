@@ -29,3 +29,4 @@ async def test_dublicate_names(product_factory):
     
     with pytest.raises(IntegrityError):
         await product_factory("foo", "baz")
+        

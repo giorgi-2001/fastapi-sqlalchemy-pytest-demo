@@ -16,7 +16,7 @@ In this demonstration project we try to test simple fastapi app using pytest
 ## Setup example:
 ### Defining main fixtures
 
-```
+``` python
     import pytest_asyncio
 
     from app.models import Product
@@ -59,7 +59,7 @@ In this demonstration project we try to test simple fastapi app using pytest
 
 ### Actual test casis:
 
-```
+```python
     import pytest
     from sqlalchemy.exc import IntegrityError
 

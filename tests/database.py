@@ -13,5 +13,3 @@ engine = create_async_engine(DATABASE_URL)
 
 
 SessionLocal = async_sessionmaker(bind=engine, autoflush=False)
-
-
