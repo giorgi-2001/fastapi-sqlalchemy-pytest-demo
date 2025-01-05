@@ -9,17 +9,18 @@ In this demonstration project we try to test simple fastapi app using pytest
 
 ## Accomplished:
 - Unit tests for database model
-
-## Upcomming:
-- Integration tests for api routes
+- Integration tests for API
 
 ## Setup example:
-### Defining main fixtures
 
 ``` python
+    import pytest
     import pytest_asyncio
+    from fastapi.testclient import TestClient
 
     from app.models import Product
+    from app.dao import ProductDao
+    from app.main import app
     from .database import engine, SessionLocal, db_path
 
     import os
@@ -54,42 +55,29 @@ In this demonstration project we try to test simple fastapi app using pytest
             await session.flush()
             return product
         return add_product
+
+
+    @pytest.fixture
+    def client():
+        class TestProductDao(ProductDao):
+            SessionLocal = SessionLocal
+
+        app.dependency_overrides[ProductDao] = TestProductDao
+        client = TestClient(app)
+
+        yield client
+
+        app.dependency_overrides[TestProductDao] = ProductDao
+
+
+
+    @pytest.fixture
+    def product_data():
+        def data(name, description):
+            return {
+                "name": name,
+                "description": description
+            }
+        return data
         
-```
-
-### Actual test cases:
-
-```python
-    import pytest
-    from sqlalchemy.exc import IntegrityError
-
-
-    @pytest.mark.asyncio
-    @pytest.mark.parametrize(
-        "name, description, valid", [
-            ("Hair Gell", "Very good hair gell", True),
-            ("Hair Gell", None, True),
-            ("Hair Gell", "", True),
-            ("", "Very good hair gell", False),
-            (None, "Very good hair gell", False),
-        ]
-    )
-    async def test_product(product_factory, name, description, valid):
-        if not valid:
-            with pytest.raises(IntegrityError):
-                await product_factory(name, description)
-        else:
-            product = await product_factory(name, description)
-            assert product.id == 1
-            assert product.name == name
-            assert product.description == description
-
-
-    @pytest.mark.asyncio
-    async def test_dublicate_names(product_factory):
-        await product_factory("foo", "baz")
-        
-        with pytest.raises(IntegrityError):
-            await product_factory("foo", "baz")
-
 ```
