@@ -92,7 +92,6 @@ def test_update_product(client, product_data, id, name, description, match):
 
 def test_update_product_with_dublicate(client, product_data):
     dublicate = product_data("dublicate", "dublicate")
-    data = dublicate.copy()
 
     client.post(BASE_URL, json=dublicate)
     response = client.put(BASE_URL + "/1", json=dublicate)
@@ -116,3 +115,4 @@ def test_delete_product_404(client):
 
     assert response.status_code == 404
     assert message["detail"] == "Not Found"
+
